@@ -115,3 +115,34 @@ func (s Service) GetById(personID int) (domain.Person, error) {
 	}
 	return domain.Person{}, fmt.Errorf("Person not found")
 }
+
+func (s *Service) Update(person domain.Person) error {
+	var indexToUpdate int = -1
+	for index, currentPerson := range s.people.People {
+		if currentPerson.ID == person.ID {
+			indexToUpdate = index
+			break
+		}
+	}
+	if indexToUpdate < 0 {
+		return fmt.Errorf("User not found")
+	}
+
+	s.people.People[indexToUpdate] = person
+	return s.saveFile()
+}
+
+func (s *Service) DeleteById(personID int) error {
+	var indexToDelete int = -1
+	for index, currentPerson := range s.people.People {
+		if currentPerson.ID == personID {
+			indexToDelete = index
+			break
+		}
+	}
+	if indexToDelete < 0 {
+		return fmt.Errorf("User not found")
+	}
+	s.people.People = append(s.people.People[:indexToDelete], s.people.People[indexToDelete+1:]...)
+	return s.saveFile()
+}
