@@ -102,3 +102,16 @@ func (s Service) saveFile() error {
 	}
 	return ioutil.WriteFile(s.dbFilePath, allPeopleJSON, 0755)
 }
+
+func (s Service) List() domain.People {
+	return s.people
+}
+
+func (s Service) GetById(personID int) (domain.Person, error) {
+	for _, currentPerson := range s.people.People {
+		if currentPerson.ID == personID {
+			return currentPerson, nil
+		}
+	}
+	return domain.Person{}, fmt.Errorf("Person not found")
+}
